@@ -1,0 +1,23 @@
+<nav class="top-navbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light d-lg-none" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="page-title"><%= typeof title !== 'undefined' ? title : 'Dashboard' %></h1>
+    </div>
+
+    <% if (typeof user !== 'undefined' && user) { %>
+        <div class="d-flex align-items-center gap-3">
+            <div class="user-badge">
+                <i class="fa-solid fa-circle-user fs-5 text-success"></i>
+                <div class="d-none d-md-block text-start">
+                    <div class="fw-bold lh-1" style="font-size: 0.875rem;"><%= user.name %></div>
+                    <small class="text-muted text-uppercase" style="font-size: 0.725rem;"><%= user.role %></small>
+                </div>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Logout">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+            </a>
+        </div>
+    <% } %>
+</nav>

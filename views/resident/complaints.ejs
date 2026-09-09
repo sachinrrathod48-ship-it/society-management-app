@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'complaints' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="row g-4">
+                <!-- Submit Complaint Form -->
+                <div class="col-lg-4">
+                    <div class="custom-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-pen-to-square me-2 text-success"></i> Submit New Complaint</h5>
+                        
+                        <form action="/resident/complaints/add" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Complaint Title</label>
+                                <input type="text" name="title" class="form-control" placeholder="e.g. Water Leakage in Kitchen" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Category</label>
+                                <select name="category" class="form-select" required>
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Electrical">Electrical</option>
+                                    <option value="Maintenance">General Maintenance</option>
+                                    <option value="Security">Security Concern</option>
+                                    <option value="Cleanliness">Cleanliness / Garbage</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Priority Level</label>
+                                <select name="priority" class="form-select">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Description of Issue</label>
+                                <textarea name="description" class="form-control" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-emerald w-100 py-2">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Register Complaint
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Complaint Status Tracking -->
+                <div class="col-lg-8">
+                    <div class="custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-list-check me-2 text-primary"></i> Track Complaint Status</h5>
+                            <div class="input-group input-group-sm" style="max-width: 250px;">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" class="form-control" placeholder="Search..." data-table-search="myComplaintsTable">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table-custom" id="myComplaintsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Admin Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (complaints && complaints.length > 0) { %>
+                                        <% complaints.forEach(c => { %>
+                                            <tr>
+                                                <td><%= new Date(c.created_at).toLocaleDateString() %></td>
+                                                <td class="fw-bold"><%= c.title %></td>
+                                                <td><span class="badge bg-light text-dark"><%= c.category %></span></td>
+                                                <td>
+                                                    <span class="badge bg-<%= c.priority === 'Urgent' ? 'danger' : c.priority === 'High' ? 'warning' : 'info' %>">
+                                                        <%= c.priority %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-status <%= c.status.toLowerCase().replace(' ', '-') %>">
+                                                        <%= c.status %>
+                                                    </span>
+                                                </td>
+                                                <td><small class="text-muted"><%= c.admin_remarks || 'Pending review by administration' %></small></td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="6" class="text-center py-4 text-muted">You have not submitted any complaints yet.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

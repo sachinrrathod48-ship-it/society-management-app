@@ -1,0 +1,128 @@
+<aside id="sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="brand-title">
+            <i class="fa-solid fa-building-user"></i>
+            <span>SmartSociety</span>
+        </a>
+    </div>
+
+    <ul class="nav-list">
+        <% if (typeof user !== 'undefined' && user) { %>
+            <% if (user.role === 'admin') { %>
+                <li class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/residents" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'residents' ? 'active' : '' %>">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Resident Management</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/security" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'security' ? 'active' : '' %>">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Security Staff</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/visitors" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'visitors' ? 'active' : '' %>">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                        <span>Visitor Master Log</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/complaints" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'complaints' ? 'active' : '' %>">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>Complaints</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/maintenance" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'maintenance' ? 'active' : '' %>">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Maintenance Bills</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/notices" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'notices' ? 'active' : '' %>">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <span>Notice Board</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/emergency" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'emergency' ? 'active' : '' %>">
+                        <i class="fa-solid fa-phone-volume"></i>
+                        <span>Emergency Contacts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/profile" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'profile' ? 'active' : '' %>">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Admin Profile</span>
+                    </a>
+                </li>
+
+            <% } else if (user.role === 'security') { %>
+                <li class="nav-item">
+                    <a href="/security/dashboard" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Security Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/security/visitors" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'visitors' ? 'active' : '' %>">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Visitor Entry Desk</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/security/history" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'history' ? 'active' : '' %>">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Visitor History Log</span>
+                    </a>
+                </li>
+
+            <% } else if (user.role === 'resident') { %>
+                <li class="nav-item">
+                    <a href="/resident/dashboard" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+                        <i class="fa-solid fa-house-user"></i>
+                        <span>Resident Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/resident/complaints" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'complaints' ? 'active' : '' %>">
+                        <i class="fa-solid fa-comment-dots"></i>
+                        <span>My Complaints</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/resident/maintenance" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'maintenance' ? 'active' : '' %>">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Maintenance Bills</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/resident/notices" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'notices' ? 'active' : '' %>">
+                        <i class="fa-solid fa-newspaper"></i>
+                        <span>Notice Board</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/resident/emergency" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'emergency' ? 'active' : '' %>">
+                        <i class="fa-solid fa-truck-medical"></i>
+                        <span>Emergency Contacts</span>
+                    </a>
+                </li>
+            <% } %>
+        <% } %>
+    </ul>
+
+    <div class="user-info">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-circle text-success" style="font-size: 0.6rem;"></i>
+            <small class="text-white-50">System Online</small>
+        </div>
+    </div>
+</aside>

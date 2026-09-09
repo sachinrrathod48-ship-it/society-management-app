@@ -1,0 +1,72 @@
+<%- include('../partials/header') %>
+    <div id="wrapper">
+        <%- include('../partials/sidebar', { activePage: 'profile' }) %>
+            <div id="main-content">
+                <%- include('../partials/navbar') %>
+
+                    <div class="content-body">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-6">
+                                <div class="custom-card p-4">
+                                    <div class="text-center mb-4">
+                                        <div class="icon-box bg-success-subtle text-success mx-auto mb-3"
+                                            style="width: 70px; height: 70px; font-size: 2rem; border-radius: 50%;">
+                                            <i class="fa-solid fa-user-gear"></i>
+                                        </div>
+                                        <h4 class="fw-bold mb-1">
+                                            <%= user.name %>
+                                        </h4>
+                                        <span class="badge bg-success px-3 py-1 text-uppercase">Administrator</span>
+                                    </div>
+
+                                    <% if (typeof msg !=='undefined' && msg) { %>
+                                        <div class="alert alert-success text-center mb-3" role="alert">
+                                            <%= msg %>
+                                        </div>
+                                        <% } %>
+                                            <% if (typeof error !=='undefined' && error) { %>
+                                                <div class="alert alert-danger text-center mb-3" role="alert">
+                                                    <%= error %>
+                                                </div>
+                                                <% } %>
+
+                                                    <form action="/admin/profile/update" method="POST">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold">Admin Email</label>
+                                                            <input type="email" class="form-control"
+                                                                value="<%= user.email %>" readonly>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold">Phone</label>
+                                                            <input type="text" class="form-control"
+                                                                value="<%= user.phone %>" readonly>
+                                                        </div>
+
+                                                        <hr class="my-4">
+                                                        <h6 class="fw-bold text-dark mb-3"><i
+                                                                class="fa-solid fa-lock me-2 text-warning"></i> Change
+                                                            Password</h6>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold">Current
+                                                                Password</label>
+                                                            <input type="password" name="old_password"
+                                                                class="form-control"
+                                                                placeholder="Enter current password">
+                                                        </div>
+                                                        <div class="mb-4">
+                                                            <label class="form-label fw-semibold">New Password</label>
+                                                            <input type="password" name="new_password"
+                                                                class="form-control" placeholder="Enter new password">
+                                                        </div>
+
+                                                        <button type="submit" class="btn btn-emerald w-100 py-2">Update
+                                                            Credentials</button>
+                                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+    <%- include('../partials/footer') %>

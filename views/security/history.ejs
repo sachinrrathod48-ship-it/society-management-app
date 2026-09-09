@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'history' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <div class="custom-card">
+                <div class="card-header flex-column flex-md-row gap-3">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> Complete Visitor Entry/Exit History</h5>
+                    <div class="input-group input-group-sm" style="max-width: 300px;">
+                        <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" class="form-control" placeholder="Search visitor, flat, date..." data-table-search="historyTable">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Visitor Name</th>
+                                <th>Mobile</th>
+                                <th>Flat No</th>
+                                <th>Resident Name</th>
+                                <th>Purpose</th>
+                                <th>Entry Time</th>
+                                <th>Exit Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (visitors && visitors.length > 0) { %>
+                                <% visitors.forEach(v => { %>
+                                    <tr>
+                                        <td><%= new Date(v.date).toLocaleDateString() %></td>
+                                        <td class="fw-bold"><%= v.visitor_name %></td>
+                                        <td><%= v.mobile_number %></td>
+                                        <td><span class="badge bg-light text-dark"><%= v.flat_number %></span></td>
+                                        <td><%= v.resident_name %></td>
+                                        <td><%= v.purpose %></td>
+                                        <td class="text-success fw-semibold"><i class="fa-regular fa-clock me-1"></i><%= v.entry_time %></td>
+                                        <td class="text-danger fw-semibold">
+                                            <% if (v.exit_time) { %>
+                                                <i class="fa-regular fa-clock me-1"></i><%= v.exit_time %>
+                                            <% } else { %>
+                                                <span class="text-muted">--:--</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <span class="badge-status <%= v.status === 'Inside' ? 'inside' : 'left' %>">
+                                                <%= v.status %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="9" class="text-center py-4 text-muted">No visitor records available.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

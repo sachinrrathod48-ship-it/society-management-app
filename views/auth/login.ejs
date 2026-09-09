@@ -1,0 +1,71 @@
+<%- include('../partials/header') %>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="fa-solid fa-building-user display-4 mb-2"></i>
+            <h3 class="fw-bold mb-0">Smart Society</h3>
+            <p class="small text-white-50 mb-0">Management Portal Login</p>
+        </div>
+
+        <div class="p-4">
+            <% if (error) { %>
+                <div class="alert alert-danger alert-dismissible fade show text-center py-2 mb-3" style="font-size: 0.875rem;" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i> <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <% if (success) { %>
+                <div class="alert alert-success alert-dismissible fade show text-center py-2 mb-3" style="font-size: 0.875rem;" role="alert">
+                    <i class="fa-solid fa-circle-check me-1"></i> <%= success %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <label class="form-label fw-semibold text-muted small mb-2 text-center d-block">SELECT YOUR USER ROLE</label>
+            <div class="d-flex gap-2 mb-4">
+                <button type="button" class="role-tab-btn active" data-role="admin">
+                    <i class="fa-solid fa-user-gear d-block mb-1 fs-5"></i> Admin
+                </button>
+                <button type="button" class="role-tab-btn" data-role="security">
+                    <i class="fa-solid fa-shield-halved d-block mb-1 fs-5"></i> Security
+                </button>
+                <button type="button" class="role-tab-btn" data-role="resident">
+                    <i class="fa-solid fa-house-user d-block mb-1 fs-5"></i> Resident
+                </button>
+            </div>
+
+            <form action="/login" method="POST">
+                <input type="hidden" name="role" id="roleInput" value="admin">
+
+                <div class="mb-3">
+                    <label for="emailInput" class="form-label fw-semibold small">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fa-regular fa-envelope text-muted"></i></span>
+                        <input type="email" name="email" id="emailInput" class="form-control border-start-0" placeholder="admin@society.com" value="admin@society.com" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="passwordInput" class="form-label fw-semibold small">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
+                        <input type="password" name="password" id="passwordInput" class="form-control border-start-0" placeholder="••••••••" value="admin123" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-emerald w-100 py-2.5 mb-3 fs-6">
+                    Sign In <i class="fa-solid fa-arrow-right-to-bracket ms-1"></i>
+                </button>
+
+                <div class="bg-light p-3 rounded-3 text-center border">
+                    <div class="small fw-semibold text-muted mb-1"><i class="fa-solid fa-lightbulb me-1 text-warning"></i> Demo Quick Login Info:</div>
+                    <div class="small text-secondary">Click any role button above to auto-fill test credentials!</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

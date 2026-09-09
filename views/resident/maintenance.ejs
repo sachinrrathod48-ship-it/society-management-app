@@ -1,0 +1,119 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'maintenance' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="custom-card">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-receipt me-2 text-success"></i> My Maintenance Dues & Receipts</h5>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Billing Month</th>
+                                <th>Flat No</th>
+                                <th>Amount (₹)</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                                <th>Method</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (bills && bills.length > 0) { %>
+                                <% bills.forEach(b => { %>
+                                    <tr>
+                                        <td class="fw-bold"><%= b.month_year %></td>
+                                        <td><%= b.flat_number %></td>
+                                        <td class="fw-bold text-success">₹<%= parseFloat(b.amount).toFixed(2) %></td>
+                                        <td><%= new Date(b.due_date).toLocaleDateString() %></td>
+                                        <td>
+                                            <span class="badge-status <%= b.status.toLowerCase() %>">
+                                                <%= b.status %>
+                                            </span>
+                                        </td>
+                                        <td><%= b.payment_date ? new Date(b.payment_date).toLocaleDateString() : 'N/A' %></td>
+                                        <td><small class="text-muted"><%= b.payment_method || 'N/A' %></small></td>
+                                        <td>
+                                            <% if (b.status === 'Unpaid') { %>
+                                                <button class="btn btn-emerald btn-sm" onclick="openPayModal(<%= JSON.stringify(b) %>)">
+                                                    <i class="fa-solid fa-credit-card me-1"></i> Pay Now
+                                                </button>
+                                            <% } else { %>
+                                                <span class="badge bg-success-subtle text-success py-1 px-2"><i class="fa-solid fa-check-double me-1"></i> Paid Receipt</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="8" class="text-center py-4 text-muted">No maintenance statements found.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pay Bill Modal -->
+<div class="modal fade" id="payBillModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-credit-card me-2"></i> Pay Society Maintenance Bill</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="payBillForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3 text-center bg-light p-3 rounded-3 border">
+                        <div class="small text-muted mb-1">Total Amount Payable</div>
+                        <h2 class="fw-bold text-success mb-0" id="modalAmount">₹0.00</h2>
+                        <small class="text-secondary" id="modalMonth">August 2026</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Payment Mode</label>
+                        <select name="payment_method" class="form-select" required>
+                            <option value="UPI / GPay / PhonePe">UPI (GPay / PhonePe / Paytm)</option>
+                            <option value="Debit / Credit Card">Debit / Credit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Simulated Transaction Notes</label>
+                        <input type="text" class="form-control" value="Demo Online Gateway Checkout" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-emerald fw-bold">Confirm & Pay Dues</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPayModal(b) {
+    document.getElementById('payBillForm').action = '/resident/maintenance/pay/' + b.id;
+    document.getElementById('modalAmount').innerText = '₹' + parseFloat(b.amount).toFixed(2);
+    document.getElementById('modalMonth').innerText = 'Billing Month: ' + b.month_year;
+    new bootstrap.Modal(document.getElementById('payBillModal')).show();
+}
+</script>
+
+<%- include('../partials/footer') %>

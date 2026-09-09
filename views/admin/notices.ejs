@@ -1,0 +1,104 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'notices' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="custom-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-bullhorn me-2 text-warning"></i> Society Digital Notice Board</h5>
+                    <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#addNoticeModal">
+                        <i class="fa-solid fa-plus me-1"></i> Create Notice
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <% if (notices && notices.length > 0) { %>
+                    <% notices.forEach(n => { %>
+                        <div class="col-md-6 col-xl-4">
+                            <div class="custom-card h-100 p-4 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-success-subtle text-success fw-bold"><%= n.category %></span>
+                                        <span class="badge bg-<%= n.priority === 'Urgent' ? 'danger' : n.priority === 'Important' ? 'warning' : 'secondary' %>">
+                                            <%= n.priority %>
+                                        </span>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2"><%= n.title %></h5>
+                                    <p class="text-muted small mb-3"><%= n.content %></p>
+                                </div>
+                                <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i> <%= new Date(n.date_posted).toLocaleDateString() %></small>
+                                    <form action="/admin/notices/delete/<%= n.id %>" method="POST" onsubmit="return confirm('Remove this notice?')" style="display:inline;">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle" title="Delete Notice">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 text-center py-5 text-muted">No notices posted yet.</div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Notice Modal -->
+<div class="modal fade" id="addNoticeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-bullhorn me-2"></i> Publish New Notice</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/notices/add" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Notice Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Annual General Body Meeting" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            <input type="text" name="category" class="form-control" placeholder="e.g. Event / Maintenance" value="General">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Priority</label>
+                            <select name="priority" class="form-select">
+                                <option value="General">General</option>
+                                <option value="Important">Important</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Posted By</label>
+                        <input type="text" name="posted_by" class="form-control" value="Society Management" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Content / Announcement Details</label>
+                        <textarea name="content" class="form-control" rows="4" placeholder="Enter complete notice text..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-emerald">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

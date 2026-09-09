@@ -1,0 +1,184 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'dashboard' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <!-- Stat Cards Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card emerald">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Total Residents</div>
+                                <div class="stat-value"><%= stats.totalResidents %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card blue">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Security Staff</div>
+                                <div class="stat-value"><%= stats.totalSecurity %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card amber">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Visitors Today</div>
+                                <div class="stat-value"><%= stats.visitorsToday %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-id-card-clip"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card rose">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Pending Complaints</div>
+                                <div class="stat-value"><%= stats.pendingComplaints %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Row: Recent Complaints & Visitors -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7">
+                    <div class="custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-headset text-danger me-2"></i> Recent Complaints</h5>
+                            <a href="/admin/complaints" class="btn btn-outline-emerald btn-sm">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Flat</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (recentComplaints && recentComplaints.length > 0) { %>
+                                        <% recentComplaints.forEach(c => { %>
+                                            <tr>
+                                                <td class="fw-bold"><%= c.flat_number %></td>
+                                                <td><%= c.title %></td>
+                                                <td><span class="badge bg-light text-dark"><%= c.category %></span></td>
+                                                <td>
+                                                    <span class="badge bg-<%= c.priority === 'Urgent' ? 'danger' : c.priority === 'High' ? 'warning' : 'info' %>">
+                                                        <%= c.priority %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-status <%= c.status.toLowerCase().replace(' ', '-') %>">
+                                                        <%= c.status %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="5" class="text-center py-4 text-muted">No complaints recorded yet.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-user-clock text-primary me-2"></i> Visitors Today</h5>
+                            <a href="/admin/visitors" class="btn btn-outline-emerald btn-sm">View Master Log</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Visitor</th>
+                                        <th>Flat</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (recentVisitors && recentVisitors.length > 0) { %>
+                                        <% recentVisitors.forEach(v => { %>
+                                            <tr>
+                                                <td class="fw-semibold"><%= v.visitor_name %></td>
+                                                <td><%= v.flat_number %></td>
+                                                <td><%= v.entry_time %></td>
+                                                <td>
+                                                    <span class="badge-status <%= v.status === 'Inside' ? 'inside' : 'left' %>">
+                                                        <%= v.status %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="4" class="text-center py-4 text-muted">No visitors logged today.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Notices Row -->
+            <div class="custom-card">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-bullhorn text-warning me-2"></i> Active Society Notices</h5>
+                    <a href="/admin/notices" class="btn btn-emerald btn-sm"><i class="fa-solid fa-plus me-1"></i> Add Notice</a>
+                </div>
+                <div class="p-3">
+                    <div class="row g-3">
+                        <% if (notices && notices.length > 0) { %>
+                            <% notices.forEach(n => { %>
+                                <div class="col-md-4">
+                                    <div class="p-3 border rounded-3 bg-light h-100">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-success-subtle text-success fw-bold"><%= n.category %></span>
+                                            <small class="text-muted"><%= new Date(n.date_posted).toLocaleDateString() %></small>
+                                        </div>
+                                        <h6 class="fw-bold mb-1"><%= n.title %></h6>
+                                        <p class="small text-muted mb-0"><%= n.content.substring(0, 90) %>...</p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="col-12 text-center py-3 text-muted">No active notices published.</div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

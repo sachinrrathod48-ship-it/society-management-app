@@ -1,0 +1,170 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'maintenance' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="custom-card">
+                <div class="card-header flex-column flex-md-row gap-3">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-file-invoice-dollar me-2 text-success"></i> Maintenance Billing & Status</h5>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-outline-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#createSingleModal">
+                            <i class="fa-solid fa-user-plus me-1"></i> Single Bill
+                        </button>
+                        <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#createBulkModal">
+                            <i class="fa-solid fa-layer-group me-1"></i> Generate Monthly Bills (Bulk)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom" id="maintenanceTable">
+                        <thead>
+                            <tr>
+                                <th>Flat No</th>
+                                <th>Resident Name</th>
+                                <th>Billing Month</th>
+                                <th>Amount (₹)</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                                <th>Payment Method</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (bills && bills.length > 0) { %>
+                                <% bills.forEach(b => { %>
+                                    <tr>
+                                        <td class="fw-bold"><%= b.flat_number %></td>
+                                        <td><%= b.resident_name %></td>
+                                        <td><span class="badge bg-light text-dark fw-semibold"><%= b.month_year %></span></td>
+                                        <td class="fw-bold text-success">₹<%= parseFloat(b.amount).toFixed(2) %></td>
+                                        <td><%= new Date(b.due_date).toLocaleDateString() %></td>
+                                        <td>
+                                            <span class="badge-status <%= b.status.toLowerCase() %>">
+                                                <%= b.status %>
+                                            </span>
+                                        </td>
+                                        <td><%= b.payment_date ? new Date(b.payment_date).toLocaleDateString() : 'N/A' %></td>
+                                        <td><small class="text-muted"><%= b.payment_method || 'N/A' %></small></td>
+                                        <td>
+                                            <% if (b.status === 'Unpaid') { %>
+                                                <form action="/admin/maintenance/pay/<%= b.id %>" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="fa-solid fa-check me-1"></i> Mark Paid
+                                                    </button>
+                                                </form>
+                                            <% } else { %>
+                                                <span class="badge bg-success-subtle text-success"><i class="fa-solid fa-circle-check me-1"></i> Cleared</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="9" class="text-center py-4 text-muted">No maintenance bills created yet.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Single Bill Modal -->
+<div class="modal fade" id="createSingleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-file-circle-plus me-2"></i> Create Individual Maintenance Bill</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/maintenance/create-single" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Resident / Flat</label>
+                        <select name="resident_id" class="form-select" required>
+                            <option value="">-- Choose Resident --</option>
+                            <% if (residents) { %>
+                                <% residents.forEach(r => { %>
+                                    <option value="<%= r.id %>"><%= r.flat_number %> - <%= r.name %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Billing Month & Year</label>
+                        <input type="text" name="month_year" class="form-control" placeholder="e.g. August 2026" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Bill Amount (₹)</label>
+                            <input type="number" step="0.01" name="amount" class="form-control" placeholder="3500.00" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Due Date</label>
+                            <input type="date" name="due_date" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-emerald">Issue Bill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Bill Modal -->
+<div class="modal fade" id="createBulkModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-layer-group me-2"></i> Generate Bulk Monthly Bills</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/maintenance/create-bulk" method="POST">
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">This will automatically generate a maintenance bill for <strong>all active society residents</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Billing Month & Year</label>
+                        <input type="text" name="month_year" class="form-control" placeholder="e.g. September 2026" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Standard Amount (₹)</label>
+                            <input type="number" step="0.01" name="amount" class="form-control" placeholder="3500.00" value="3500.00" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Due Date</label>
+                            <input type="date" name="due_date" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate Bills</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

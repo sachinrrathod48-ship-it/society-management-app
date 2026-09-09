@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'notices' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <div class="custom-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-newspaper me-2 text-warning"></i> Society Digital Notice Board</h5>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <% if (notices && notices.length > 0) { %>
+                    <% notices.forEach(n => { %>
+                        <div class="col-md-6 col-xl-4">
+                            <div class="custom-card h-100 p-4 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-success-subtle text-success fw-bold"><%= n.category %></span>
+                                        <span class="badge bg-<%= n.priority === 'Urgent' ? 'danger' : n.priority === 'Important' ? 'warning' : 'secondary' %>">
+                                            <%= n.priority %>
+                                        </span>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2"><%= n.title %></h5>
+                                    <p class="text-muted small mb-3"><%= n.content %></p>
+                                </div>
+                                <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <small class="text-muted"><i class="fa-regular fa-calendar me-1"></i> Posted: <%= new Date(n.date_posted).toLocaleDateString() %></small>
+                                    <small class="text-secondary fw-semibold"><i class="fa-solid fa-user-pen me-1"></i> <%= n.posted_by %></small>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 text-center py-5 text-muted">No notices posted at this time.</div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

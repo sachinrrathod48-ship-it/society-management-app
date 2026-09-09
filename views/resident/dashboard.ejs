@@ -1,0 +1,126 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'dashboard' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <!-- Welcome Resident Card -->
+            <div class="card border-0 bg-gradient text-white p-4 mb-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h3 class="fw-bold mb-1">Welcome Home, <%= user.name %>!</h3>
+                        <p class="mb-0 text-white-50"><i class="fa-solid fa-house-chimney me-2"></i> Flat <%= user.flat_number || 'A-101' %>, <%= user.wing || 'A Wing' %></p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/resident/complaints" class="btn btn-light btn-sm fw-semibold text-success">
+                            <i class="fa-solid fa-plus me-1"></i> New Complaint
+                        </a>
+                        <a href="/resident/maintenance" class="btn btn-outline-light btn-sm fw-semibold">
+                            <i class="fa-solid fa-credit-card me-1"></i> Pay Maintenance
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Overview Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="stat-card rose">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Pending Maintenance Dues</div>
+                                <div class="stat-value text-danger">₹<%= totalDue.toFixed(2) %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stat-card amber">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Active Complaints Tracked</div>
+                                <div class="stat-value"><%= pendingComplaintsCount %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid: Latest Notices & Recent Complaints -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="custom-card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-newspaper text-success me-2"></i> Latest Society Notices</h5>
+                            <a href="/resident/notices" class="btn btn-outline-emerald btn-sm">Notice Board</a>
+                        </div>
+                        <div class="p-3">
+                            <% if (notices && notices.length > 0) { %>
+                                <div class="list-group list-group-flush">
+                                    <% notices.forEach(n => { %>
+                                        <div class="list-group-item px-0 py-3 border-bottom">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="badge bg-success-subtle text-success fw-bold"><%= n.category %></span>
+                                                <small class="text-muted"><%= new Date(n.date_posted).toLocaleDateString() %></small>
+                                            </div>
+                                            <h6 class="fw-bold mb-1"><%= n.title %></h6>
+                                            <p class="small text-muted mb-0"><%= n.content.substring(0, 90) %>...</p>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-4 text-muted">No notices posted.</div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="custom-card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-comment-dots text-primary me-2"></i> My Service Complaints</h5>
+                            <a href="/resident/complaints" class="btn btn-outline-emerald btn-sm">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (myComplaints && myComplaints.length > 0) { %>
+                                        <% myComplaints.forEach(c => { %>
+                                            <tr>
+                                                <td class="fw-semibold"><%= c.title %></td>
+                                                <td><span class="badge bg-light text-dark"><%= c.category %></span></td>
+                                                <td>
+                                                    <span class="badge-status <%= c.status.toLowerCase().replace(' ', '-') %>">
+                                                        <%= c.status %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="3" class="text-center py-4 text-muted">You have no complaints submitted.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

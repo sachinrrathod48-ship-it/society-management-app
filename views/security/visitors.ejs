@@ -1,0 +1,123 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'visitors' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="row g-4">
+                <!-- Visitor Registration Form Column -->
+                <div class="col-lg-4">
+                    <div class="custom-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-id-card me-2 text-success"></i> New Visitor Check-In</h5>
+                        
+                        <form action="/security/visitors/add" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Visitor Name</label>
+                                <input type="text" name="visitor_name" class="form-control" placeholder="Full name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mobile Number</label>
+                                <input type="text" name="mobile_number" class="form-control" placeholder="10-digit mobile number" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Visiting Flat</label>
+                                <select name="flat_number" id="flatSelect" class="form-select" required onchange="updateResidentName(this)">
+                                    <option value="">-- Select Flat --</option>
+                                    <% if (residents) { %>
+                                        <% residents.forEach(r => { %>
+                                            <option value="<%= r.flat_number %>" data-resident="<%= r.name %>">
+                                                <%= r.flat_number %> (<%= r.name %>)
+                                            </option>
+                                        <% }) %>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Resident Name</label>
+                                <input type="text" name="resident_name" id="residentNameInput" class="form-control" placeholder="Resident name" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Purpose of Visit</label>
+                                <input type="text" name="purpose" class="form-control" placeholder="e.g. Delivery / Guest / Plumber" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-emerald w-100 py-2">
+                                <i class="fa-solid fa-right-to-bracket me-1"></i> Record Gate Entry
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Active Visitors Inside Column -->
+                <div class="col-lg-8">
+                    <div class="custom-card">
+                        <div class="card-header">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-person-shelter me-2 text-primary"></i> Currently Inside Society</h5>
+                            <div class="input-group input-group-sm" style="max-width: 250px;">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" class="form-control" placeholder="Search..." data-table-search="insideVisitorsTable">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table-custom" id="insideVisitorsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Visitor</th>
+                                        <th>Mobile</th>
+                                        <th>Flat</th>
+                                        <th>Resident</th>
+                                        <th>Entry Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (currentlyInside && currentlyInside.length > 0) { %>
+                                        <% currentlyInside.forEach(v => { %>
+                                            <tr>
+                                                <td class="fw-bold"><%= v.visitor_name %></td>
+                                                <td><%= v.mobile_number %></td>
+                                                <td><span class="badge bg-light text-dark"><%= v.flat_number %></span></td>
+                                                <td><%= v.resident_name %></td>
+                                                <td class="text-success fw-semibold"><i class="fa-regular fa-clock me-1"></i><%= v.entry_time %></td>
+                                                <td>
+                                                    <form action="/security/visitors/exit/<%= v.id %>" method="POST">
+                                                        <button type="submit" class="btn btn-warning btn-sm fw-bold">
+                                                            <i class="fa-solid fa-right-from-bracket me-1"></i> Mark Exit
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="6" class="text-center py-4 text-muted">No visitors currently inside campus.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateResidentName(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const residentName = selectedOption.getAttribute('data-resident');
+    if (residentName) {
+        document.getElementById('residentNameInput').value = residentName;
+    }
+}
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'emergency' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <% if (typeof msg !== 'undefined' && msg) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> <%= msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <% } %>
+
+            <div class="custom-card">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-phone-volume me-2 text-danger"></i> Emergency Contacts Directory</h5>
+                    <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#addEmergencyModal">
+                        <i class="fa-solid fa-plus me-1"></i> Add Contact
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Name / Service</th>
+                                <th>Designation / Role</th>
+                                <th>Phone Number</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (contacts && contacts.length > 0) { %>
+                                <% contacts.forEach(c => { %>
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-<%= c.category === 'Medical' ? 'danger' : c.category === 'Security' ? 'primary' : 'warning' %> text-white">
+                                                <%= c.category %>
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold"><%= c.name %></td>
+                                        <td><%= c.designation %></td>
+                                        <td class="fw-bold text-success"><i class="fa-solid fa-phone me-1"></i> <%= c.phone %></td>
+                                        <td>
+                                            <form action="/admin/emergency/delete/<%= c.id %>" method="POST" onsubmit="return confirm('Delete emergency contact?')" style="display:inline;">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm rounded">
+                                                    <i class="fa-solid fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="5" class="text-center py-4 text-muted">No emergency contacts listed.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Emergency Modal -->
+<div class="modal fade" id="addEmergencyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-phone-volume me-2"></i> Add Emergency Contact</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/emergency/add" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Service / Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. City Emergency Hospital" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Designation / Description</label>
+                        <input type="text" name="designation" class="form-control" placeholder="e.g. 24x7 Trauma Center" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" placeholder="108 / 9820011223" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            <select name="category" class="form-select">
+                                <option value="Essential">Essential</option>
+                                <option value="Medical">Medical</option>
+                                <option value="Security">Security</option>
+                                <option value="Maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

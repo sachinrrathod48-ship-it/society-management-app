@@ -1,0 +1,143 @@
+<%- include('../partials/header') %>
+<div id="wrapper">
+    <%- include('../partials/sidebar', { activePage: 'dashboard' }) %>
+    <div id="main-content">
+        <%- include('../partials/navbar') %>
+
+        <div class="content-body">
+            <!-- Security Quick Alert / Status Bar -->
+            <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border-0 shadow-sm">
+                <div>
+                    <h5 class="alert-heading fw-bold mb-1"><i class="fa-solid fa-shield-halved me-2"></i> Security Gate Command Desk</h5>
+                    <small>On Duty Guard: <strong><%= user.name %></strong> (Badge: <%= user.badge_number || 'SEC-001' %>)</small>
+                </div>
+                <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#quickVisitorModal">
+                    <i class="fa-solid fa-user-plus me-1"></i> Quick Visitor Entry
+                </button>
+            </div>
+
+            <!-- Security Stat Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="stat-card emerald">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Visitors Currently Inside</div>
+                                <div class="stat-value"><%= insideCount %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-building-circle-check"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stat-card blue">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="stat-label">Total Entries Logged Today</div>
+                                <div class="stat-value"><%= todayCount %></div>
+                            </div>
+                            <div class="icon-box">
+                                <i class="fa-solid fa-clipboard-user"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Currently Inside Visitors Table -->
+            <div class="custom-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fa-solid fa-person-shelter text-success me-2"></i> Visitors Currently Inside Campus</h5>
+                    <a href="/security/visitors" class="btn btn-outline-emerald btn-sm">Full Gate Entry Desk</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Visitor Name</th>
+                                <th>Mobile</th>
+                                <th>Target Flat</th>
+                                <th>Resident Name</th>
+                                <th>Purpose</th>
+                                <th>Entry Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (currentlyInside && currentlyInside.length > 0) { %>
+                                <% currentlyInside.forEach(v => { %>
+                                    <tr>
+                                        <td class="fw-bold"><%= v.visitor_name %></td>
+                                        <td><%= v.mobile_number %></td>
+                                        <td><span class="badge bg-light text-dark fw-bold fs-6"><%= v.flat_number %></span></td>
+                                        <td><%= v.resident_name %></td>
+                                        <td><%= v.purpose %></td>
+                                        <td class="text-success fw-semibold"><i class="fa-regular fa-clock me-1"></i><%= v.entry_time %></td>
+                                        <td>
+                                            <form action="/security/visitors/exit/<%= v.id %>" method="POST">
+                                                <button type="submit" class="btn btn-warning btn-sm fw-bold">
+                                                    <i class="fa-solid fa-right-from-bracket me-1"></i> Mark Exit
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr><td colspan="7" class="text-center py-4 text-muted">No visitors currently inside. All visitors have departed!</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Visitor Entry Modal -->
+<div class="modal fade" id="quickVisitorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i> Record New Visitor Entry</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/security/visitors/add" method="POST">
+                <input type="hidden" name="redirect" value="/security/dashboard">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Visitor Full Name</label>
+                        <input type="text" name="visitor_name" class="form-control" placeholder="e.g. Anand Shinde" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mobile Number</label>
+                        <input type="text" name="mobile_number" class="form-control" placeholder="9988776655" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Flat Number</label>
+                            <input type="text" name="flat_number" class="form-control" placeholder="e.g. A-101" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Resident Name</label>
+                            <input type="text" name="resident_name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Purpose of Visit</label>
+                        <input type="text" name="purpose" class="form-control" placeholder="e.g. Delivery / Guest / Courier / Maintenance" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-emerald">Allow Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
