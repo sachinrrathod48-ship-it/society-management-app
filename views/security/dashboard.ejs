@@ -130,6 +130,28 @@
                         <label class="form-label fw-semibold">Purpose of Visit</label>
                         <input type="text" name="purpose" class="form-control" placeholder="e.g. Delivery / Guest / Courier / Maintenance" required>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Visitor Photo</label>
+                        <div class="d-flex flex-column align-items-center bg-light p-2 rounded border">
+                            <video id="camera-stream" width="100%" autoplay playsinline style="max-width: 320px; border-radius: 8px;"></video>
+                            <canvas id="camera-canvas" style="display:none;"></canvas>
+                            <img id="photo-preview" style="display:none; max-width: 320px; border-radius: 8px; margin-top: 10px;" />
+                            <input type="hidden" name="photo_data" id="photo_data">
+                            
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-primary" id="btn-start-camera">
+                                    <i class="fa-solid fa-camera"></i> Start Camera
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success" id="btn-capture" style="display:none;">
+                                    <i class="fa-solid fa-camera-retro"></i> Capture
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btn-retake" style="display:none;">
+                                    <i class="fa-solid fa-rotate-left"></i> Retake
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -140,4 +162,59 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('camera-stream');
+    const canvas = document.getElementById('camera-canvas');
+    const photoPreview = document.getElementById('photo-preview');
+    const photoData = document.getElementById('photo_data');
+    
+    const btnStart = document.getElementById('btn-start-camera');
+    const btnCapture = document.getElementById('btn-capture');
+    const btnRetake = document.getElementById('btn-retake');
+    
+    let stream = null;
+
+    btnStart.addEventListener('click', async () => {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            video.style.display = 'block';
+            photoPreview.style.display = 'none';
+            btnStart.style.display = 'none';
+            btnCapture.style.display = 'inline-block';
+            btnRetake.style.display = 'none';
+        } catch (err) {
+            console.error('Error accessing camera:', err);
+            alert('Camera access denied or not available.');
+        }
+    });
+
+    btnCapture.addEventListener('click', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        photoData.value = dataUrl;
+        photoPreview.src = dataUrl;
+        
+        video.style.display = 'none';
+        photoPreview.style.display = 'block';
+        btnCapture.style.display = 'none';
+        btnRetake.style.display = 'inline-block';
+        
+        // Stop camera
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    btnRetake.addEventListener('click', () => {
+        photoData.value = '';
+        btnStart.click();
+    });
+});
+</script>
 <%- include('../partials/footer') %>

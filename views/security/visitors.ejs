@@ -48,6 +48,28 @@
                                 <label class="form-label fw-semibold">Purpose of Visit</label>
                                 <input type="text" name="purpose" class="form-control" placeholder="e.g. Delivery / Guest / Plumber" required>
                             </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Visitor Photo</label>
+                                <div class="d-flex flex-column align-items-center bg-light p-2 rounded border">
+                                    <video id="camera-stream-sec" width="100%" autoplay playsinline style="max-width: 320px; border-radius: 8px;"></video>
+                                    <canvas id="camera-canvas-sec" style="display:none;"></canvas>
+                                    <img id="photo-preview-sec" style="display:none; max-width: 320px; border-radius: 8px; margin-top: 10px;" />
+                                    <input type="hidden" name="photo_data" id="photo_data_sec">
+                                    
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn-start-camera-sec">
+                                            <i class="fa-solid fa-camera"></i> Start Camera
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-success" id="btn-capture-sec" style="display:none;">
+                                            <i class="fa-solid fa-camera-retro"></i> Capture
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-secondary" id="btn-retake-sec" style="display:none;">
+                                            <i class="fa-solid fa-rotate-left"></i> Retake
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
                             <button type="submit" class="btn btn-emerald w-100 py-2">
                                 <i class="fa-solid fa-right-to-bracket me-1"></i> Record Gate Entry
@@ -83,7 +105,14 @@
                                     <% if (currentlyInside && currentlyInside.length > 0) { %>
                                         <% currentlyInside.forEach(v => { %>
                                             <tr>
-                                                <td class="fw-bold"><%= v.visitor_name %></td>
+                                                <td class="fw-bold">
+                                                    <% if (v.photo_data) { %>
+                                                        <img src="<%= v.photo_data %>" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                                    <% } else { %>
+                                                        <i class="fa-solid fa-user-circle text-muted fs-4 align-middle me-2"></i>
+                                                    <% } %>
+                                                    <%= v.visitor_name %>
+                                                </td>
                                                 <td><%= v.mobile_number %></td>
                                                 <td><span class="badge bg-light text-dark"><%= v.flat_number %></span></td>
                                                 <td><%= v.resident_name %></td>
@@ -118,6 +147,59 @@ function updateResidentName(select) {
         document.getElementById('residentNameInput').value = residentName;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('camera-stream-sec');
+    const canvas = document.getElementById('camera-canvas-sec');
+    const photoPreview = document.getElementById('photo-preview-sec');
+    const photoData = document.getElementById('photo_data_sec');
+    
+    const btnStart = document.getElementById('btn-start-camera-sec');
+    const btnCapture = document.getElementById('btn-capture-sec');
+    const btnRetake = document.getElementById('btn-retake-sec');
+    
+    let stream = null;
+
+    btnStart.addEventListener('click', async () => {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            video.style.display = 'block';
+            photoPreview.style.display = 'none';
+            btnStart.style.display = 'none';
+            btnCapture.style.display = 'inline-block';
+            btnRetake.style.display = 'none';
+        } catch (err) {
+            console.error('Error accessing camera:', err);
+            alert('Camera access denied or not available.');
+        }
+    });
+
+    btnCapture.addEventListener('click', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        photoData.value = dataUrl;
+        photoPreview.src = dataUrl;
+        
+        video.style.display = 'none';
+        photoPreview.style.display = 'block';
+        btnCapture.style.display = 'none';
+        btnRetake.style.display = 'inline-block';
+        
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    btnRetake.addEventListener('click', () => {
+        photoData.value = '';
+        btnStart.click();
+    });
+});
 </script>
 
 <%- include('../partials/footer') %>

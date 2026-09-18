@@ -52,7 +52,9 @@
                                                     <i class="fa-solid fa-credit-card me-1"></i> Pay Now
                                                 </button>
                                             <% } else { %>
-                                                <span class="badge bg-success-subtle text-success py-1 px-2"><i class="fa-solid fa-check-double me-1"></i> Paid Receipt</span>
+                                                <a href="/resident/maintenance/receipt/<%= b.id %>" target="_blank" class="btn btn-outline-success btn-sm">
+                                                    <i class="fa-solid fa-file-invoice me-1"></i> Receipt
+                                                </a>
                                             <% } %>
                                         </td>
                                     </tr>

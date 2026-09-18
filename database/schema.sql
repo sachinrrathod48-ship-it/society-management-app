@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS society_db;
 USE society_db;
 
 -- 1. Admins Table
-CREATE TABLE IF NOT EXISTS admins (
+REATE TABLE IF NOT EXISTS admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS residents (
     flat_number VARCHAR(20) NOT NULL,
     wing VARCHAR(10) NOT NULL,
     occupation VARCHAR(50) DEFAULT 'Resident',
-    status ENUM('Active', 'Inactive') DEFAULT 'Active',
+    status ENUM('Active', 'Inactive') DEFAULT 'Inactive',
     role VARCHAR(20) DEFAULT 'resident',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS visitors (
     entry_time TIME NOT NULL,
     exit_time TIME DEFAULT NULL,
     status ENUM('Inside', 'Left') DEFAULT 'Inside',
+    photo_data LONGTEXT DEFAULT NULL,
     recorded_by_security_id INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

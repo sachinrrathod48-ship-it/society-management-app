@@ -14,6 +14,7 @@ router.get('/residents', adminController.getResidents);
 router.post('/residents/add', adminController.addResident);
 router.post('/residents/edit/:id', adminController.updateResident);
 router.post('/residents/delete/:id', adminController.deleteResident);
+router.post('/residents/approve/:id', adminController.approveResident);
 
 // Security Staff Management
 router.get('/security', adminController.getSecurity);

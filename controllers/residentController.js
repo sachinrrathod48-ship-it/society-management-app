@@ -89,6 +89,26 @@ exports.payBill = async (req, res) => {
     }
 };
 
+exports.getReceipt = async (req, res) => {
+    try {
+        const residentId = req.session.user.id;
+        const myBills = await Maintenance.getByResidentId(residentId);
+        const bill = myBills.find(b => b.id === parseInt(req.params.id) && b.status === 'Paid');
+        
+        if (!bill) {
+            return res.redirect('/resident/maintenance?error=' + encodeURIComponent('Receipt not found or not paid.'));
+        }
+
+        res.render('resident/receipt', {
+            title: 'Maintenance Receipt',
+            user: req.session.user,
+            bill
+        });
+    } catch (err) {
+        res.redirect('/resident/maintenance?error=' + encodeURIComponent(err.message));
+    }
+};
+
 exports.getNotices = async (req, res) => {
     try {
         const notices = await Notice.getAll();

@@ -3,11 +3,37 @@ const db = require('../config/db');
 
 exports.getLogin = (req, res) => {
     res.render('auth/login', {
-        title: 'Login - Smart Society Management System',
+        title: 'Login - Mahabank Colony Management System',
         error: req.query.error || null,
         success: req.query.success || null,
         user: null
     });
+};
+
+exports.getRegister = (req, res) => {
+    res.render('auth/register', {
+        title: 'Register - Mahabank Colony Management System',
+        error: null,
+        user: null
+    });
+};
+
+exports.postRegister = async (req, res) => {
+    const { name, email, phone, occupation, flat_number, wing } = req.body;
+    try {
+        const Resident = require('../models/Resident');
+        await Resident.create({
+            name, email, phone, occupation, flat_number, wing, status: 'Inactive', password: 'pending_approval'
+        });
+        res.redirect('/login?success=' + encodeURIComponent('Registration successful! Please wait for admin approval.'));
+    } catch(err) {
+        console.error('[REGISTER ERROR]:', err);
+        res.render('auth/register', {
+            title: 'Register - Mahabank Colony Management System',
+            error: 'Registration failed. Email might already exist.',
+            user: null
+        });
+    }
 };
 
 exports.postLogin = async (req, res) => {
@@ -15,7 +41,7 @@ exports.postLogin = async (req, res) => {
 
     if (!email || !password || !role) {
         return res.render('auth/login', {
-            title: 'Login - Smart Society Management System',
+            title: 'Login - Mahabank Colony Management System',
             error: 'All fields (Email, Password, and Role) are required.',
             success: null,
             user: null
@@ -26,7 +52,7 @@ exports.postLogin = async (req, res) => {
         const user = await User.authenticate(email, password, role);
         if (!user) {
             return res.render('auth/login', {
-                title: 'Login - Smart Society Management System',
+                title: 'Login - Mahabank Colony Management System',
                 error: 'Invalid credentials or wrong role selected. Please try again.',
                 success: null,
                 user: null
@@ -34,6 +60,15 @@ exports.postLogin = async (req, res) => {
         }
 
         // Store user info in session
+        if (role === 'resident' && user.status === 'Inactive') {
+            return res.render('auth/login', {
+                title: 'Login - Mahabank Colony Management System',
+                error: 'Your account is pending admin approval.',
+                success: null,
+                user: null
+            });
+        }
+
         req.session.user = {
             id: user.id,
             name: user.name,
@@ -54,7 +89,7 @@ exports.postLogin = async (req, res) => {
     } catch (err) {
         console.error('[AUTH CONTROLLER ERROR]:', err);
         res.render('auth/login', {
-            title: 'Login - Smart Society Management System',
+            title: 'Login - Mahabank Colony Management System',
             error: 'An unexpected database error occurred. Ensure MySQL is running.',
             success: null,
             user: null

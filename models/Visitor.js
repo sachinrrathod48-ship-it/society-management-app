@@ -16,8 +16,8 @@ class Visitor {
     static async create(data, securityId = null) {
         const sql = `
             INSERT INTO visitors 
-            (visitor_name, mobile_number, flat_number, resident_name, purpose, date, entry_time, status, recorded_by_security_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'Inside', ?)
+            (visitor_name, mobile_number, flat_number, resident_name, purpose, date, entry_time, status, recorded_by_security_id, photo_data)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'Inside', ?, ?)
         `;
         const dateStr = data.date || new Date().toISOString().split('T')[0];
         const timeStr = data.entry_time || new Date().toTimeString().split(' ')[0];
@@ -30,7 +30,8 @@ class Visitor {
             data.purpose,
             dateStr,
             timeStr,
-            securityId
+            securityId,
+            data.photo_data || null
         ];
         return await db.query(sql, params);
     }

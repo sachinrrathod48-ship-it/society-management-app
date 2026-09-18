@@ -19,7 +19,7 @@ exports.getDashboard = async (req, res) => {
         const recentComplaints = await Complaint.getAll();
 
         res.render('admin/dashboard', {
-            title: 'Admin Dashboard - Smart Society',
+            title: 'Admin Dashboard - Mahabank Colony',
             user: req.session.user,
             stats: {
                 totalResidents,
@@ -69,6 +69,33 @@ exports.updateResident = async (req, res) => {
         res.redirect('/admin/residents?msg=' + encodeURIComponent('Resident updated successfully!'));
     } catch (err) {
         res.redirect('/admin/residents?error=' + encodeURIComponent('Error updating resident: ' + err.message));
+    }
+};
+
+exports.approveResident = async (req, res) => {
+    try {
+        const residentId = req.params.id;
+        const resident = await Resident.getById(residentId);
+        if (!resident) throw new Error('Resident not found');
+        
+        // Generate a random password
+        const randomPass = 'Mahabank@' + Math.floor(100 + Math.random() * 900);
+        
+        // Update resident status to Active and set the new password
+        await Resident.update(residentId, {
+            name: resident.name,
+            email: resident.email,
+            phone: resident.phone,
+            flat_number: resident.flat_number,
+            wing: resident.wing,
+            occupation: resident.occupation,
+            status: 'Active',
+            password: randomPass
+        });
+        
+        res.redirect('/admin/residents?msg=' + encodeURIComponent(`Resident Approved! Generated Password for ${resident.name}: ${randomPass}`));
+    } catch (err) {
+        res.redirect('/admin/residents?error=' + encodeURIComponent('Error approving resident: ' + err.message));
     }
 };
 

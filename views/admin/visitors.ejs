@@ -42,7 +42,14 @@
                                 <% visitors.forEach(v => { %>
                                     <tr>
                                         <td><%= new Date(v.date).toLocaleDateString() %></td>
-                                        <td class="fw-bold"><%= v.visitor_name %></td>
+                                        <td class="fw-bold">
+                                            <% if (v.photo_data) { %>
+                                                <img src="<%= v.photo_data %>" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                            <% } else { %>
+                                                <i class="fa-solid fa-user-circle text-muted fs-4 align-middle me-2"></i>
+                                            <% } %>
+                                            <%= v.visitor_name %>
+                                        </td>
                                         <td><%= v.mobile_number %></td>
                                         <td><span class="badge bg-light text-dark fw-bold"><%= v.flat_number %></span></td>
                                         <td><%= v.resident_name %></td>

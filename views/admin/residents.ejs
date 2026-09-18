@@ -64,6 +64,13 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
+                                                <% if (r.status === 'Inactive') { %>
+                                                    <form action="/admin/residents/approve/<%= r.id %>" method="POST" style="display:inline;">
+                                                        <button type="submit" class="btn btn-outline-success btn-sm me-1 rounded">
+                                                            <i class="fa-solid fa-check"></i> Approve
+                                                        </button>
+                                                    </form>
+                                                <% } %>
                                                 <button class="btn btn-outline-primary btn-sm me-1 rounded" 
                                                         onclick="editResident(<%= JSON.stringify(r) %>)">
                                                     <i class="fa-solid fa-pen"></i> Edit

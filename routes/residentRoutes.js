@@ -11,6 +11,7 @@ router.get('/complaints', residentController.getComplaints);
 router.post('/complaints/add', residentController.submitComplaint);
 router.get('/maintenance', residentController.getMaintenance);
 router.post('/maintenance/pay/:id', residentController.payBill);
+router.get('/maintenance/receipt/:id', residentController.getReceipt);
 router.get('/notices', residentController.getNotices);
 router.get('/emergency', residentController.getEmergency);
 
