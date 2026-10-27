@@ -5,18 +5,27 @@
         <%- include('../partials/navbar') %>
 
         <div class="content-body">
-            <!-- Welcome Resident Card -->
-            <div class="card border-0 bg-gradient text-white p-4 mb-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <!-- Welcome Resident Card with Colourful Society Picture -->
+            <div class="card border-0 text-white p-4 p-md-5 mb-4 rounded-4 shadow-sm position-relative overflow-hidden society-hero-banner" 
+                 style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(5, 150, 105, 0.85) 55%, rgba(16, 185, 129, 0.70) 100%), url('/images/society-banner.jpg') center/cover no-repeat; min-height: 190px;">
+                <div class="position-relative z-1 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
-                        <h3 class="fw-bold mb-1">Welcome Home, <%= user.name %>!</h3>
-                        <p class="mb-0 text-white-50"><i class="fa-solid fa-house-chimney me-2"></i> Flat <%= user.flat_number || 'A-101' %>, <%= user.wing || 'A Wing' %></p>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-white text-success fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-tree-city me-1"></i> Mahabank Colony
+                            </span>
+                            <span class="badge bg-emerald text-white border border-light-subtle px-2.5 py-1 rounded-pill small">
+                                <i class="fa-solid fa-circle-check text-warning me-1"></i> Resident Portal
+                            </span>
+                        </div>
+                        <h2 class="fw-bold mb-1">Welcome Home, <%= user.name %>!</h2>
+                        <p class="mb-0 text-white-75"><i class="fa-solid fa-house-chimney me-2 text-warning"></i> Flat <%= user.flat_number || 'A-101' %>, <%= user.wing || 'A Wing' %> &bull; Smart Community Member</p>
                     </div>
-                    <div class="d-flex gap-2">
-                        <a href="/resident/complaints" class="btn btn-light btn-sm fw-semibold text-success">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="/resident/complaints" class="btn btn-light btn-sm fw-bold text-success px-3 py-2 shadow-sm">
                             <i class="fa-solid fa-plus me-1"></i> New Complaint
                         </a>
-                        <a href="/resident/maintenance" class="btn btn-outline-light btn-sm fw-semibold">
+                        <a href="/resident/maintenance" class="btn btn-emerald btn-sm fw-bold px-3 py-2 shadow-sm text-white border border-light">
                             <i class="fa-solid fa-credit-card me-1"></i> Pay Maintenance
                         </a>
                     </div>

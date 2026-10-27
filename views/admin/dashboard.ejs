@@ -5,6 +5,33 @@
         <%- include('../partials/navbar') %>
 
         <div class="content-body">
+            <!-- Society Welcome Banner with Colourful Picture -->
+            <div class="card border-0 text-white p-4 mb-4 rounded-4 shadow-sm position-relative overflow-hidden society-hero-banner" 
+                 style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(5, 150, 105, 0.85) 60%, rgba(16, 185, 129, 0.70) 100%), url('/images/society-banner.jpg') center/cover no-repeat; min-height: 160px;">
+                <div class="position-relative z-1 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-white text-dark fw-bold px-3 py-1 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-city text-success me-1"></i> Mahabank Colony
+                            </span>
+                            <span class="badge bg-emerald text-white px-2.5 py-1 rounded-pill small">
+                                <i class="fa-solid fa-shield-halved text-warning me-1"></i> Admin Command Desk
+                            </span>
+                        </div>
+                        <h3 class="fw-bold mb-1">Society Administrative Dashboard</h3>
+                        <p class="mb-0 text-white-75 small">Comprehensive management of residents, campus security staff, visitors, maintenance dues, and complaints.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="/admin/notices" class="btn btn-light btn-sm fw-bold text-success px-3 py-2 shadow-sm">
+                            <i class="fa-solid fa-bullhorn me-1"></i> Post Notice
+                        </a>
+                        <a href="/admin/residents" class="btn btn-emerald btn-sm fw-bold px-3 py-2 shadow-sm text-white border border-light">
+                            <i class="fa-solid fa-user-plus me-1"></i> Add Resident
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Stat Cards Row -->
             <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-sm-6">

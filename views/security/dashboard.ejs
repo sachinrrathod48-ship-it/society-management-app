@@ -5,15 +5,19 @@
         <%- include('../partials/navbar') %>
 
         <div class="content-body">
-            <!-- Security Quick Alert / Status Bar -->
-            <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border-0 shadow-sm">
-                <div>
-                    <h5 class="alert-heading fw-bold mb-1"><i class="fa-solid fa-shield-halved me-2"></i> Security Gate Command Desk</h5>
-                    <small>On Duty Guard: <strong><%= user.name %></strong> (Badge: <%= user.badge_number || 'SEC-001' %>)</small>
+            <!-- Security Quick Alert / Status Bar with Colourful Campus Picture -->
+            <div class="card border-0 text-white p-4 mb-4 rounded-4 shadow-sm position-relative overflow-hidden society-hero-banner"
+                 style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(5, 150, 105, 0.85) 100%), url('/images/society-banner.jpg') center/cover no-repeat;">
+                <div class="position-relative z-1 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2"><i class="fa-solid fa-shield-halved me-1"></i> Main Gate Command</span>
+                        <h4 class="fw-bold mb-1">Security Gate Operations</h4>
+                        <small class="text-white-75">On Duty Guard: <strong><%= user.name %></strong> &bull; Badge: <%= user.badge_number || 'SEC-001' %></small>
+                    </div>
+                    <button class="btn btn-warning btn-sm fw-bold px-3 py-2 shadow-sm text-dark" data-bs-toggle="modal" data-bs-target="#quickVisitorModal">
+                        <i class="fa-solid fa-user-plus me-1"></i> Quick Visitor Entry
+                    </button>
                 </div>
-                <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#quickVisitorModal">
-                    <i class="fa-solid fa-user-plus me-1"></i> Quick Visitor Entry
-                </button>
             </div>
 
             <!-- Security Stat Cards -->

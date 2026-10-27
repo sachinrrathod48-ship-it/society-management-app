@@ -44,9 +44,18 @@
                                         <td><%= new Date(v.date).toLocaleDateString() %></td>
                                         <td class="fw-bold">
                                             <% if (v.photo_data) { %>
-                                                <img src="<%= v.photo_data %>" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                                <img src="<%= v.photo_data %>" class="rounded-circle me-2 shadow-sm" style="width: 32px; height: 32px; object-fit: cover; border: 2px solid #10B981;">
                                             <% } else { %>
-                                                <i class="fa-solid fa-user-circle text-muted fs-4 align-middle me-2"></i>
+                                                <% 
+                                                    const avatarColors = ['#059669', '#2563EB', '#D97706', '#7C3AED', '#E11D48', '#0D9488'];
+                                                    const initial = v.visitor_name ? v.visitor_name.charAt(0).toUpperCase() : 'V';
+                                                    const colorIdx = v.visitor_name ? v.visitor_name.charCodeAt(0) % avatarColors.length : 0;
+                                                    const avatarBg = avatarColors[colorIdx];
+                                                %>
+                                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-2 shadow-sm" 
+                                                      style="width: 32px; height: 32px; font-size: 0.85rem; background-color: <%= avatarBg %>;">
+                                                    <%= initial %>
+                                                </span>
                                             <% } %>
                                             <%= v.visitor_name %>
                                         </td>

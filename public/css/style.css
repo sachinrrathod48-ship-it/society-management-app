@@ -317,11 +317,96 @@ body {
 /* Modern Login Screen */
 .login-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #059669 100%);
+    background: radial-gradient(circle at 10% 20%, rgba(5, 150, 105, 0.3), transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.25), transparent 45%),
+                #0b1329;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 980px;
+    z-index: 2;
+}
+
+.login-card-split {
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.login-visual-side {
+    position: relative;
+    background: url('/images/society-banner.jpg') center/cover no-repeat;
+    min-height: 540px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-visual-side .visual-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.88) 100%);
+    z-index: 1;
+}
+
+.login-visual-side .visual-content {
+    position: relative;
+    z-index: 2;
+    padding: 2.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.society-logo-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.community-pill {
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    font-size: 0.825rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.letter-spacing {
+    letter-spacing: 0.08em;
+}
+
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.society-hero-banner {
+    background-size: cover !important;
+    background-position: center !important;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.society-hero-banner:hover {
+    box-shadow: var(--shadow-lg);
 }
 
 .login-card {
